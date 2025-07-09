@@ -1,0 +1,33 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+
+Sitemap: https://gestor.local/sitemap.xml
+
+Host: https://gestor.local
+
+# Crawling frequency
+Crawl-delay: 10
+
+# Googlebot specific rules
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+
+# Bingbot specific rules
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+
+# Yandexbot specific rules
+User-agent: Yandex
+Allow: /
+Disallow: /api/
+
+# Baidu specific rules
+User-agent: Baiduspider
+Allow: /
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://gestor.local/sitemap.xml

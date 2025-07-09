@@ -1,36 +1,109 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Gestor Local de Contraseñas
 
-## Getting Started
+Un gestor de contraseñas local y seguro desarrollado con React y Next.js.
 
-First, run the development server:
+## Características
 
+- 📝 Almacenamiento local de contraseñas
+- 🔒 Encriptación de datos
+- 🔄 Generación de contraseñas seguras
+- 🔍 Búsqueda de contraseñas
+- 📋 Copiado rápido al portapapeles
+- 🔄 Actualización de contraseñas
+- 🗑️ Eliminación segura
+- 📱 Interfaz responsiva
+- 🎨 Diseño moderno y atractivo
+- 🛡️ Notificaciones en tiempo real
+
+## Requisitos
+
+- Node.js (versión 16 o superior)
+- npm o yarn
+
+## Instalación
+
+1. Clona el repositorio:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone [URL_DEL_REPOSITORIO]
+cd GestorLocal
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Instala las dependencias:
+```bash
+npm install
+# o
+yarn install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Inicia el servidor de desarrollo:
+```bash
+npm run dev
+# o
+yarn dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+4. Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-## Learn More
+## Tecnologías Utilizadas
 
-To learn more about Next.js, take a look at the following resources:
+- React 18
+- Next.js
+- TypeScript
+- Tailwind CSS
+- React Hot Toast
+- Context API
+- Local Storage
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Estructura del Proyecto
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/
+│   ├── context/
+│   │   └── PasswordsContext.jsx
+│   ├── lib/
+│   │   └── alert/
+│   │       └── alert.js
+│   └── passwords/
+│       └── page.jsx
+├── components/
+│   ├── PasswordForm/
+│   ├── PasswordList/
+│   └── PasswordCard/
+└── styles/
+    └── globals.css
+```
 
-## Deploy on Vercel
+## Seguridad
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Las contraseñas se almacenan encriptadas localmente
+- Cada contraseña tiene un ID único
+- Validación de datos antes de almacenar
+- Sistema de notificaciones para errores y operaciones exitosas
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contribución
+
+1. Crea un fork del proyecto
+2. Crea una rama para tu función (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre una Pull Request
+
+## Licencia
+
+Este proyecto está bajo la licencia MIT - consulta el archivo [LICENSE](LICENSE) para más detalles.
+
+## Soporte
+
+Para reportar bugs o sugerir nuevas características, por favor abre un issue en el repositorio.
+
+## Autor
+
+- **[Tu Nombre]** - [Tu Email]
+
+## Agradecimientos
+
+- React y Next.js equipos
+- React Hot Toast
+- Tailwind CSS
+- Todas las personas que contribuyen al proyecto
