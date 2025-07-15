@@ -63,23 +63,46 @@ const PasswordsPage = () => {
 
   const handleImport = e => {
     const file = e.target.files[0]
-    const reader = new FileReader()
+    if (!file) return errorAlert('No se seleccionó ningún archivo')
 
-    reader.onload = async event => {
-      const contenido = event.target.result
-      const decryptedData = await decrypt(contenido, secretKey)
-      const decompressedData = await decompress(decryptedData)
-      if (decryptedData === false) {
-        return errorAlert('Datos corruptos o clave incorrecta')
+    const reader = new FileReader()
+    reader.onload = async (event) => {
+      try {
+        const contenido = event.target.result
+        const decryptedData = await decrypt(contenido, secretKey)
+        
+        if (decryptedData === false) {
+          e.target.value = ''
+          return errorAlert('Datos corruptos o clave incorrecta')
+        }
+
+        const decompressedData = await decompress(decryptedData)
+        if (!decompressedData) {
+          e.target.value = ''
+          return errorAlert('Error al descomprimir los datos')
+        }
+
+        dispatch({ type: 'defaultPasswords', payload: decompressedData })
+        successAlert('Importación exitosa')
+        e.target.value = ''
+      } catch (error) {
+        console.error('Error en la importación:', error)
+        errorAlert('Error al importar los datos')
+        e.target.value = ''
       }
-      dispatch({ type: 'defaultPasswords', payload: decompressedData })
     }
+
+    reader.onerror = () => {
+      errorAlert('Error al leer el archivo')
+    }
+
     reader.readAsText(file)
   }
 
   const handleChangeSecretKey = () => {
     setViewSecretKey(!viewSecretKey)
     dispatch({ type: 'clearState' })
+    
   }
 
   const datosFiltrados = useMemo(() => {
@@ -206,9 +229,10 @@ const PasswordsPage = () => {
                         password.id
                       ).toLocaleDateString()
                       return (
-                        <tr key={password.id} className='hover:bg-gray-100'>
-                          <td className='px-4 py-4 whitespace-nowrap text-sm dark:text-gray-300 max-w-[250px] inline-block  truncate'>
-                            {password.website}
+                        <tr key={password.id} className='hover:bg-gray-100 dark:hover:bg-gray-700'>
+                          <td className='flex flex-row-reverse gap-4 items-center px-4 py-4 whitespace-nowrap text-sm dark:text-gray-300 max-w-[250px] truncate'>
+                            <span className='w-full'>{password.website}</span>
+                            <img src={`https://icons.duckduckgo.com/ip3/${password.website}.com.ico` || './webIcon.svg'} alt={password.website} className='h-5 w-5'/>
                           </td>
                           <td className='px-4 py-4 text-sm dark:text-gray-300 '>
                             <div className='flex flex-row items-center justify-between max-w-[250px]  truncate'>
@@ -220,7 +244,7 @@ const PasswordsPage = () => {
                                   copyToClipboard(password.username)
                                 }
                               >
-                                <MdContentCopy className='w-3.5 h-3.5 text-neutral-800 dark:text-neutral-200 hover:text-neutral-600 dark:hover:text-neutral-700 hover:scale-105 cursor-pointer' />
+                                <MdContentCopy className='w-3.5 h-3.5 text-neutral-800 dark:text-neutral-200 hover:text-neutral-600 dark:hover:text-neutral-100 hover:scale-105 cursor-pointer' />
                               </button>
                             </div>
                           </td>
@@ -231,7 +255,7 @@ const PasswordsPage = () => {
                             <button
                               onClick={() => copyToClipboard(password.password)}
                             >
-                              <MdContentCopy className='w-3.5 h-3.5 text-neutral-800 dark:text-neutral-200 hover:text-neutral-600 dark:hover:text-neutral-700 hover:scale-105 cursor-pointer' />
+                              <MdContentCopy className='w-3.5 h-3.5 text-neutral-800 dark:text-neutral-200 hover:text-neutral-600 dark:hover:text-neutral-100 hover:scale-105 cursor-pointer' />
                             </button>
                           </td>
                           <td className='px-4 py-4 whitespace-nowrap text-sm  dark:text-gray-300'>
@@ -244,7 +268,7 @@ const PasswordsPage = () => {
                               title='Editar'
                               onClick={() => handleEdit(password.id)}
                             >
-                              <FaEdit className='w-5 h-5 text-neutral-800 dark:text-neutral-200 hover:text-neutral-600 dark:hover:text-neutral-700 hover:scale-105 cursor-pointer' />
+                              <FaEdit className='w-5 h-5 text-neutral-800 dark:text-neutral-200 hover:text-neutral-600 dark:hover:text-neutral-100 hover:scale-105 cursor-pointer' />
                             </button>
                             <button
                               className='text-red-400 dark:text-red-300 hover:text-red-600 dark:hover:text-red-400'
@@ -257,7 +281,7 @@ const PasswordsPage = () => {
                                 })
                               }
                             >
-                              <FaTrash className='w-5 h-5 text-neutral-800 dark:text-neutral-200 hover:text-neutral-600 dark:hover:text-neutral-700 hover:scale-105 cursor-pointer' />
+                              <FaTrash className='w-5 h-5 text-neutral-800 dark:text-neutral-200 hover:text-neutral-600 dark:hover:text-neutral-100 hover:scale-105 cursor-pointer' />
                             </button>
                           </td>
                         </tr>

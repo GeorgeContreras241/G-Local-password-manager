@@ -26,7 +26,7 @@ export const SecretKey = ({setViewSecretKey}) => {
             onChange={e => setSecretKeyView(e.target.value)}
             placeholder='Clave Secreta'
             className='p-2 px-5 dark:border-gray-600 dark:bg-gray-700 dark:text-white border border-gray-300 rounded'
-            minLength={8}
+            minLength={8} 
             required
           />
           <button
