@@ -6,6 +6,7 @@ import {
   FaUserShield
 } from 'react-icons/fa'
 import { FaXTwitter } from 'react-icons/fa6'
+import Link  from 'next/link'
 
 const features = [
   {
@@ -98,12 +99,12 @@ export const Hero = () => {
             </a>
           </div>
           <div className='flex sm:flex-row flex-col justify-end p-6 gap-4 '>
-            <button className='bg-blue-700 px-8 h-10 rounded-md text-white font-semibold cursor-pointer hover:bg-blue-600 transition-all'>
+            <Link href='/passwords' className='bg-blue-700 flex items-center gap-2 px-8 h-10 rounded-md text-white font-semibold cursor-pointer hover:bg-blue-600 transition-all'>
               Comenzar
-            </button>
-            <button className='bg-blue-700 px-8 h-10 rounded-md text-white font-semibold cursor-pointer hover:bg-blue-600 transition-all'>
+            </Link>
+            <a href='https://porta-tau.vercel.app/' target='_blank' rel='noopener noreferrer' className='bg-blue-700 flex items-center gap-2 px-8 h-10 rounded-md text-white font-semibold cursor-pointer hover:bg-blue-600 transition-all'>
               Visitar Portfolio
-            </button>
+            </a>
           </div>
         </div>
         <div className='lg:w-2/4 h-[400px] overflow-hidden rounded-lg w-full'>
