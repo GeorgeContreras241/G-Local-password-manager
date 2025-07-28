@@ -3,8 +3,10 @@ import { useState, useEffect, use } from 'react'
 import { Button } from './Button'
 import { Input } from './Input'
 import { PasswordsContext } from '@/app/context/PasswordsContext'
+import { RiAiGenerate } from "react-icons/ri";
 import { errorAlert, successAlert } from '@/app/lib/alert/alert'
-export const Form = ({ editId, setEditId, generatedPassword }) => {
+
+export const Form = ({ editId, setEditId, generatedPassword ,generateRandomPassword}) => {
   const { dispatch, passwords } = use(PasswordsContext)
   const [inputForm, setInputForm] = useState({
     website: '',
@@ -89,16 +91,31 @@ export const Form = ({ editId, setEditId, generatedPassword }) => {
         placeholder='Usuario'
         required
       />
-      <Input
-        label='Contraseña'
-        id='password'
-        type='password'
-        value={inputForm.password}
-        onChange={e => setInputForm({ ...inputForm, password: e.target.value })}
-        name='password'
-        placeholder='Contraseña'
-        required
-      />
+      <div className='flex items-center justify-center w-full gap-2'>
+        <div className='mb-2 w-full'>
+          <label
+            htmlFor='password'
+            className='block w-full text-sm font-medium text-gray-700 dark:text-gray-200'
+          >
+            Contraseña
+          </label>
+          <input
+            type='password'
+            id='password'
+            value={inputForm.password}
+            onChange={e =>
+              setInputForm({ ...inputForm, password: e.target.value })
+            }
+            name='password'
+            placeholder='Contraseña'
+            className='mt-1 w-full px-4 py-2 rounded-md border border-gray-300 dark:border-gray-600 shadow-sm sm:text-sm dark:text-gray-200'
+            required
+          />
+        </div>
+        <button onClick={generateRandomPassword} className='flex items-center justify-center gap-2 mt-4 cursor-pointer hover:scale-105 transition-all' title='Generar contraseña aleatoria' type='button'>
+          <RiAiGenerate  className='h-6 w-6'/>
+        </button>
+      </div>
       <Button
         text={editId ? 'Editar Contraseña' : 'Agregar Contraseña'}
         ariaLabel='Agregar nueva contraseña'

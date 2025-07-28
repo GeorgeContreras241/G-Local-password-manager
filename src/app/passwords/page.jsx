@@ -5,104 +5,38 @@ import { SecretKey } from '@/app/components/ui/SecretKey'
 import { use, useState, useMemo } from 'react'
 import { PasswordsContext } from '@/app/context/PasswordsContext'
 import { Form } from '@/app/components/ui/Form'
-import { compress, decompress } from '@/app/lib/helpers/covert'
-import { encrypt, decrypt } from '@/app/lib/helpers/crypto'
-import { errorAlert, successAlert, copyAlert } from '@/app/lib/alert/alert'
 import { Search } from '@/app/components/ui/Search'
 import { Button } from '@/app/components/ui/Button'
+import { useHandlePasswords } from '@/app/lib/hooks/useHandlePasswords'
+import { useGeneratePasswords } from '@/app/lib/hooks/useGeneratePasswords'
+import { successAlert } from '@/app/lib/alert/alert'
 
 const PasswordsPage = () => {
-  //Uso de Contextos de contraseñas y clave secreta
   const { passwords, dispatch, secretKey } = use(PasswordsContext)
-  //Uso de useState para ordenar y ver la clave secreta
+  const { handleDownload, handleImport } = useHandlePasswords(
+    passwords,
+    secretKey
+  )
+  const { generateRandomPassword, generatedPassword } = useGeneratePasswords()
   const [sortedWebsite, setSortedWebsite] = useState(false)
   const [viewSecretKey, setViewSecretKey] = useState(false)
-  const [generatedPassword, setGeneratedPassword] = useState('')
-
-
-  const generateRandomPassword = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
-    let password = '';
-    for (let i = 0; i < 40; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      password += characters.charAt(randomIndex);
-    }
-    setGeneratedPassword(password);
-    copyToClipboard(password);
-    successAlert('Contraseña generada y copiada al portapapeles');
-  }
-
   const [searchData, setSearchData] = useState('')
   const [editId, setEditId] = useState(null)
 
-  const copyToClipboard = async text => {
-    try {
-      await navigator.clipboard.writeText(text)
-      copyAlert('Texto copiado al portapapeles')
-    } catch (err) {
-      console.error('Error al copiar:', err)
-    }
-  }
-  const handleEdit = id => {
-    setEditId(id)
+  const handleGenerateRandomPassword = () => {
+    generateRandomPassword()
+    navigator.clipboard.writeText(generatedPassword)
+    successAlert('Contraseña generada y copiada al portapapeles')
   }
 
-  const handleDownload = () => {
-    const data = compress(passwords)
-    const encryptedData = encrypt(data, secretKey)
-    const blob = new Blob([encryptedData], { type: 'application/octet-stream' })
-    const url = URL.createObjectURL(blob)
-
-    const link = document.createElement('a')
-    link.href = url
-    link.download = 'contraseñas.gpass'
-    link.click()
-    URL.revokeObjectURL(url)
-    successAlert('Contraseñas descargadas correctamente')
-  }
-
-  const handleImport = e => {
-    const file = e.target.files[0]
-    if (!file) return errorAlert('No se seleccionó ningún archivo')
-
-    const reader = new FileReader()
-    reader.onload = async (event) => {
-      try {
-        const contenido = event.target.result
-        const decryptedData = await decrypt(contenido, secretKey)
-        
-        if (decryptedData === false) {
-          e.target.value = ''
-          return errorAlert('Datos corruptos o clave incorrecta')
-        }
-
-        const decompressedData = await decompress(decryptedData)
-        if (!decompressedData) {
-          e.target.value = ''
-          return errorAlert('Error al descomprimir los datos')
-        }
-
-        dispatch({ type: 'defaultPasswords', payload: decompressedData })
-        successAlert('Importación exitosa')
-        e.target.value = ''
-      } catch (error) {
-        console.error('Error en la importación:', error)
-        errorAlert('Error al importar los datos')
-        e.target.value = ''
-      }
-    }
-
-    reader.onerror = () => {
-      errorAlert('Error al leer el archivo')
-    }
-
-    reader.readAsText(file)
+  const copyToClipboard = text => {
+    navigator.clipboard.writeText(text)
+    successAlert('Texto copiado al portapapeles')
   }
 
   const handleChangeSecretKey = () => {
     setViewSecretKey(!viewSecretKey)
     dispatch({ type: 'clearState' })
-    
   }
 
   const datosFiltrados = useMemo(() => {
@@ -121,18 +55,12 @@ const PasswordsPage = () => {
 
   return (
     <main className='min-h-screen dark:bg-gray-900 bg-white/50 backdrop-blur-md'>
-      
       <div className='max-w-7xl mx-auto p-6 md:p-8 lg:p-10 dark:bg-gray-900/90 bg-white rounded-lg shadow-lg'>
         <header className='mb-8'>
           <div className='flex items-center flex-col md:flex-row justify-between gap-4'>
             <h1 className='text-3xl w-10/12  font-bold text-gray-900 dark:text-white'>
               Administrador de Contraseñas
             </h1>
-            <Button 
-              onClick={generateRandomPassword} 
-              title='Generar una contraseña aleatoria de 40 caracteres'
-              text='Generar Contraseña'
-            /> 
           </div>
           <p className='text-sm text-gray-600 dark:text-gray-300 mt-2'>
             Gestiona tus credenciales de manera segura.
@@ -140,10 +68,11 @@ const PasswordsPage = () => {
         </header>
         <section className='flex flex-col gap-4'>
           <div className='flex md:flex-row flex-col gap-4'>
-            <Form 
-              editId={editId} 
-              setEditId={setEditId} 
+            <Form
+              editId={editId}
+              setEditId={setEditId}
               generatedPassword={generatedPassword}
+              generateRandomPassword={handleGenerateRandomPassword}
             />
             <aside className='w-full md:w-1/3 flex flex-col items-center justify-center gap-2 p-2'>
               <Button
@@ -153,7 +82,7 @@ const PasswordsPage = () => {
               />
               <label
                 htmlFor='import-file'
-                className='w-full inline-flex justify-center rounded-md border border-transparent bg-gray-800 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                className='w-full inline-flex justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-blue-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'
               >
                 Importar
               </label>
@@ -229,10 +158,20 @@ const PasswordsPage = () => {
                         password.id
                       ).toLocaleDateString()
                       return (
-                        <tr key={password.id} className='hover:bg-gray-100 dark:hover:bg-gray-700'>
+                        <tr
+                          key={password.id}
+                          className='hover:bg-gray-100 dark:hover:bg-gray-700'
+                        >
                           <td className='flex flex-row-reverse gap-4 items-center px-4 py-4 whitespace-nowrap text-sm dark:text-gray-300 max-w-[250px] truncate'>
                             <span className='w-full'>{password.website}</span>
-                            <img src={`https://icons.duckduckgo.com/ip3/${password.website}.com.ico` || './webIcon.svg'} alt={password.website} className='h-5 w-5'/>
+                            <img
+                              src={
+                                `https://icons.duckduckgo.com/ip3/${password.website}.com.ico` ||
+                                './webIcon.svg'
+                              }
+                              alt={password.website}
+                              className='h-5 w-5'
+                            />
                           </td>
                           <td className='px-4 py-4 text-sm dark:text-gray-300 '>
                             <div className='flex flex-row items-center justify-between max-w-[250px]  truncate'>
@@ -266,7 +205,7 @@ const PasswordsPage = () => {
                               className='text-blue-400 dark:text-blue-300 hover:text-blue-600 dark:hover:text-blue-400 mr-2'
                               aria-label={`Editar contraseña de ${password.website}`}
                               title='Editar'
-                              onClick={() => handleEdit(password.id)}
+                              onClick={() => setEditId(password.id)}
                             >
                               <FaEdit className='w-5 h-5 text-neutral-800 dark:text-neutral-200 hover:text-neutral-600 dark:hover:text-neutral-100 hover:scale-105 cursor-pointer' />
                             </button>

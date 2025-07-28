@@ -7,9 +7,9 @@ export const Footer = () => {
         <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
           {/* Columna 1: Información General */}
           <div>
-            <h3 className='text-xl font-bold mb-4'>
+            <p className='text-xl font-bold mb-4'>
               Gestor de Contraseñas Local
-            </h3>
+            </p>
             <p className='text-gray-200 mb-4'>
               Una aplicación segura y local para gestionar tus contraseñas
             </p>

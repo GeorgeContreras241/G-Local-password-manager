@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+@theme{
+  --color-bg-light: #FFFFFF;
+  --color-bg-dark: #0F172A;
+  --color-text-light: #0F172A;
+  --color-text-dark: #F8FAFC;
+  --color-text-secondary-light: #475569;
+  --color-text-secondary-dark: #94A3B8;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 .ocultar-scroll {

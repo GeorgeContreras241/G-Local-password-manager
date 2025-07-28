@@ -1,11 +1,20 @@
 'use client'
-import { ThemeContext } from '@/app/context/ThemeContext'
 import { FaMoon, FaSun } from 'react-icons/fa6'
-import { use, useEffect } from 'react'
+import { BiSolidLock } from "react-icons/bi";
+import { useEffect, useState   } from 'react'
 import Link from 'next/link'
 
 export const Navbar = () => {
-  const { theme, toggleTheme } = use(ThemeContext)
+  const [theme, setTheme] = useState(false)
+  //true Dark
+  //false Light
+
+  const toggleTheme = () => {
+    setTheme((prev) => !prev)
+    localStorage.setItem('theme', theme ? 'light' : 'dark')
+    console.log(localStorage.getItem('theme'))
+    console.log(theme)
+  }
 
   useEffect(() => {
     if (theme) {
@@ -15,41 +24,34 @@ export const Navbar = () => {
     }
   }, [theme])
 
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme')
+    if (savedTheme === 'dark') {
+      setTheme(true)
+    } else {
+      setTheme(false)
+    }
+  }, [])
+
   return (
-    <header
-      className='w-full h-14 flex md:justify-between justify-center items-center bg-white dark:bg-gray-800
-        text-gray-900 dark:text-gray-200 shadow-lg dark:shadow-none
-        border border-gray-300 dark:border-gray-700 xl:px-60 lg:px-46  md:px-12  px-6'
-    >
-      <p className='text-xl font-bold hidden md:block'>Gestor de Contraseñas Local</p>
-      <nav className='flex gap-4 flex-row text-white dark:text-black '>
-        <button
-          onClick={toggleTheme}
-          className='cursor-pointer text-gray-900 dark:text-gray-200 hover:text-gray-700 dark:hover:text-gray-300 transition-colors'
-        >
+    <header className='h-18 max-w-7xl mx-auto flex items-center justify-between px-2'>
+      <p className='flex items-center gap-0.5'>
+        <BiSolidLock className='h-8 w-8 text-blue-600' />
+        <Link href='/' className='font-bold lg:text-3xl text-2xl text-text-light dark:text-text-dark'>Lockora</Link>
+      </p>
+      <nav className='flex flex-row-reverse items-center justify-center  lg:gap-8 gap-6 text-text-light dark:text-text-dark'>
+        <button onClick={toggleTheme} className='bg-blue-600 p-2 rounded-md' aria-label='Cambiar tema'>
           {theme ? (
-            <FaMoon className='h-5 w-5 cursor-pointer hover:scale-105 transition-all' />
+            <FaMoon className='h-5 w-5 text-white cursor-pointer hover:scale-105 transition-all' />
           ) : (
-            <FaSun className='h-5 w-5 cursor-pointer hover:scale-105 transition-all' />
+            <FaSun className='h-5 w-5 text-white cursor-pointer hover:scale-105 transition-all' />
           )}
         </button>
-        <Link
-          href='/'
-className='text-[0.9rem] bg-gray-900 dark:bg-gray-700 px-4 py-1 hover:bg-gray-800 dark:hover:bg-gray-600 rounded text-gray-200 dark:text-gray-200'
-        >
-          Inicio
+        <Link href='/passwords' className='lg:text-lg md:text-sm text-[.7rem] font-semibold '>
+          Contraseñas
         </Link>
-        <Link
-          href='/passwords'
-className='text-[0.9rem] bg-gray-900 dark:bg-gray-700 px-4 py-1 hover:bg-gray-800 dark:hover:bg-gray-600 rounded text-gray-200 dark:text-gray-200'
-        >
-          Tus Contraseñas
-        </Link>
-        <Link
-          href='/how'
-className='text-[0.9rem] bg-gray-900 dark:bg-gray-700 px-4 py-1 hover:bg-gray-800 dark:hover:bg-gray-600 rounded text-gray-200 dark:text-gray-200'
-        >
-          ¡Como funciona!
+        <Link href='/how' className='lg:text-lg md:text-sm text-[.7rem] font-semibold'>
+          Como funciona
         </Link>
       </nav>
     </header>
