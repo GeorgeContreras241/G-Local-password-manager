@@ -37,3 +37,21 @@
     opacity: 0;
     width: 100px;
 }
+
+/*Estilos para el menu*/
+.menu-btn{
+    cursor: pointer;
+}
+.menu-div{
+  transform-origin: left;
+  transition: transform 0.3s ease-in-out;
+}
+.menu-btn.active div:nth-child(1){
+    transform: rotate(45deg);
+}
+.menu-btn.active div:nth-child(2){
+    visibility: hidden;
+}
+.menu-btn.active div:nth-child(3){
+    transform: rotate(-45deg);
+}
